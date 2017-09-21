@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="greenActive">#2E7D32</color>
+    <color name="greenInactive">#A5D6A7</color>
+    <color name="redActive">#C62828</color>
+    <color name="redInactive">#EF9A9A</color>
+    <color name="yellowActive">#F9A825</color>
+    <color name="yellowInactive">#FFF59D</color>
+    <color name="blueActive">#1565C0</color>
+    <color name="blueInactive">#90CAF9</color>
+    <color name="deepPurpleActive">#4527A0</color>
+    <color name="deepPurpleInactive">#B39DDB</color>
+</resources>
