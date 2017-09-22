@@ -18,8 +18,14 @@ public class AudioPlayer implements Audible{
 
     @Override
     public void playAudio(int audioId){
-        instance = MediaPlayer.create(this.context,audioId);
-        instance.start();
+        //TODO: Bug!, after a few playbacks the audio stops being heard
+        if(instance != null)
+            instance.stop();
+        new Thread(() -> {
+                instance = MediaPlayer.create(this.context,audioId);
+                instance.start();
+            }).start();
+
     }
 
     @Override

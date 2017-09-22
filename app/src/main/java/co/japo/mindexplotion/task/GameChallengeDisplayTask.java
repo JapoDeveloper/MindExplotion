@@ -8,6 +8,7 @@ import android.widget.Button;
 import java.lang.reflect.Array;
 
 import co.japo.mindexplotion.MainActivity;
+import co.japo.mindexplotion.R;
 import co.japo.mindexplotion.model.Option;
 import co.japo.mindexplotion.util.AudioPlayer;
 
@@ -53,7 +54,7 @@ public class GameChallengeDisplayTask extends AsyncTask<Integer[],Integer,Boolea
 
     @Override
     protected void onPreExecute(){
-
+        audioPlayer.playAudio(R.raw.start_game);
     }
 
     @Override
@@ -64,12 +65,13 @@ public class GameChallengeDisplayTask extends AsyncTask<Integer[],Integer,Boolea
 
     @Override
     protected void onPostExecute(Boolean result){
+        audioPlayer.stopAudio();
         delegate.processFinish(result);
     }
 
     @Override
     protected void onCancelled(){
-
+        audioPlayer.stopAudio();
     }
 
     private Button getButtonByIndex(int index){

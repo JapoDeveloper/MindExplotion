@@ -98,6 +98,7 @@ public class GameController implements AsyncResponse {
     public void processUserSelection(View view){
         Option option = getOptionByView(view);
         if(option != null) {
+            audioPlayer.playAudio(option.getSound());
             boolean valid = option.getValue() == challenge.get(this.evaluationChallengeIndex);
             System.out.println("Level "+challenge.size()+" => index "+this.evaluationChallengeIndex+", value expected "+challenge.get(this.evaluationChallengeIndex)+", value getted "+option.getValue());
             if (!valid) {
@@ -138,10 +139,15 @@ public class GameController implements AsyncResponse {
         if(earnedPoints > highestScore)
             this.highestScore = earnedPoints;
 
+        audioPlayer.playAudio(R.raw.game_over);
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
 
         builder.setMessage(R.string.game_over);
-        builder.setNeutralButton(R.string.new_game,(dialogInterface, i) -> startNewGame());
+        builder.setNeutralButton(R.string.new_game,(dialogInterface, i) -> {
+            audioPlayer.stopAudio();
+            startNewGame();
+        });
 
         builder.create().show();
     }
