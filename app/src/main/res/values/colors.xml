@@ -14,4 +14,5 @@
     <color name="blueInactive">#90CAF9</color>
     <color name="deepPurpleActive">#4527A0</color>
     <color name="deepPurpleInactive">#B39DDB</color>
+    <color name="white">#fff</color>
 </resources>

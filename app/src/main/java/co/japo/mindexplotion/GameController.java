@@ -9,9 +9,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import co.japo.mindexplotion.model.Game;
 import co.japo.mindexplotion.model.Option;
+import co.japo.mindexplotion.service.InternalStorageService;
 import co.japo.mindexplotion.task.AsyncResponse;
 import co.japo.mindexplotion.task.GameChallengeDisplayTask;
 import co.japo.mindexplotion.util.AudioPlayer;
@@ -25,6 +28,7 @@ public class GameController implements AsyncResponse {
 
     private final int MIN_VALUE = 1, MAX_VALUE = 4;
 
+    private InternalStorageService internalStorageService;
     private Activity context;
     private Option[] options;
     private AudioPlayer audioPlayer;
@@ -35,6 +39,8 @@ public class GameController implements AsyncResponse {
     private Integer currentScore;
     private Integer highestScore;
 
+    private List<Game> games;
+
 
     public GameController(Activity context){
         this.context = context;
@@ -43,6 +49,7 @@ public class GameController implements AsyncResponse {
     }
 
     private void init(){
+        this.internalStorageService = InternalStorageService.getCurrentInstance();
         this.options = new Option[] {
                 new Option(this.context.findViewById(R.id.startGame),
                         0,R.color.deepPurpleActive,R.color.deepPurpleInactive,R.raw.sound4),
@@ -63,8 +70,20 @@ public class GameController implements AsyncResponse {
         this.audioPlayer = new AudioPlayer(this.context);
         this.gameStarted = false;
         this.currentScore = 0;
-        this.highestScore = 0;
+
+        this.games = this.internalStorageService.readGames(context);
+        if(games == null){
+            this.highestScore = 0;
+        }else{
+            this.highestScore = games.get(0).getScore();
+            for(int i = 1; i < games.size(); i++){
+                if(games.get(i).getScore() > this.highestScore){
+                    this.highestScore = games.get(i).getScore();
+                }
+            }
+        }
         enableViews(false);
+
     }
 
     public void startNewGame(){
@@ -98,9 +117,10 @@ public class GameController implements AsyncResponse {
     public void processUserSelection(View view){
         Option option = getOptionByView(view);
         if(option != null) {
-            audioPlayer.playAudio(option.getSound());
+            animateButton(view, option);
             boolean valid = option.getValue() == challenge.get(this.evaluationChallengeIndex);
             System.out.println("Level "+challenge.size()+" => index "+this.evaluationChallengeIndex+", value expected "+challenge.get(this.evaluationChallengeIndex)+", value getted "+option.getValue());
+
             if (!valid) {
                 gameOver();
             }else if(this.evaluationChallengeIndex+1 == challenge.size()){
@@ -109,6 +129,14 @@ public class GameController implements AsyncResponse {
                 this.evaluationChallengeIndex++;
             }
         }
+    }
+
+    private void animateButton(View view, Option option){
+        audioPlayer.playAudio(option.getSound());
+        view.setBackgroundColor(context.getResources().getColor(option.getActive_color()));
+        view.postDelayed(() -> {
+            view.setBackgroundColor(context.getResources().getColor(option.getInactive_color()));
+        },550);
     }
 
     private Option getOptionByView(View view){
@@ -136,8 +164,12 @@ public class GameController implements AsyncResponse {
 
     private void gameOver(){
         int earnedPoints = challenge.size()-1;
-        if(earnedPoints > highestScore)
+        if(earnedPoints > highestScore) {
             this.highestScore = earnedPoints;
+        }
+
+        Game gamePlayed = new Game(new Date(),earnedPoints);
+        this.internalStorageService.saveGame(gamePlayed, context);
 
         audioPlayer.playAudio(R.raw.game_over);
 
