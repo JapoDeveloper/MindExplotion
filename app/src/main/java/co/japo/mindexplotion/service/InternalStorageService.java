@@ -41,23 +41,8 @@ public class InternalStorageService {
         if(instance == null){
             instance = new InternalStorageService();
             context = appContext;
-            init();
         }
         return instance;
-    }
-
-    private static void init(){
-        try {
-            FileOutputStream fileOutputStream = context.openFileOutput(FILE_STORAGE, MODE_PRIVATE);
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-
-            objectOutputStream.writeObject(new Game(new Date(),0));
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public boolean saveGame(Game game){
