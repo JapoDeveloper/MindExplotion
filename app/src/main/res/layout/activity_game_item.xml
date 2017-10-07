@@ -6,16 +6,16 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context="co.japo.mindexplotion.GameItemActivity">
+    tools:context="co.japo.mindexplotion.activity.GameItemActivity">
 
     <TextView
         android:id="@+id/score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Score"
-        android:textSize="24sp"
+        android:textSize="20sp"
         android:textStyle="bold"
-        android:textColor="@color/blueActive"/>
+        android:textColor="@color/colorPrimary"/>
 
     <TextView
         android:id="@+id/date"

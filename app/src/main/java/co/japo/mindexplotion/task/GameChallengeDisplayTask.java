@@ -2,12 +2,10 @@ package co.japo.mindexplotion.task;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
 
-import java.lang.reflect.Array;
-
-import co.japo.mindexplotion.MainActivity;
 import co.japo.mindexplotion.R;
 import co.japo.mindexplotion.model.Option;
 import co.japo.mindexplotion.util.AudioPlayer;
@@ -79,11 +77,9 @@ public class GameChallengeDisplayTask extends AsyncTask<Integer[],Integer,Boolea
     }
 
     private void animateButton(View view, int index){
-//        audioPlayer.playAudio(this.gameOptions[index].getSound());
-        view.setBackgroundColor(context.getResources().getColor(gameOptions[index].getActive_color()));
+        view.setBackgroundColor(ContextCompat.getColor(this.context,gameOptions[index].getActive_color()));
         view.postDelayed(() -> {
-            view.setBackgroundColor(context.getResources().getColor(gameOptions[index].getInactive_color()));
-//            audioPlayer.stopAudio();
+            view.setBackgroundColor(ContextCompat.getColor(this.context, gameOptions[index].getInactive_color()));
         },550);
     }
 

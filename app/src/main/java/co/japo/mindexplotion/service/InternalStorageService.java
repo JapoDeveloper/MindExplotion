@@ -11,8 +11,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import co.japo.mindexplotion.model.Game;
@@ -26,29 +29,46 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class InternalStorageService {
 
-    private final String FILE_STORAGE = "mind_exploation_data";
+    private static final String FILE_STORAGE = "mind_explotion_data";
     private static InternalStorageService instance;
+    private static Context context;
 
     private InternalStorageService(){
 
     }
 
-    public static InternalStorageService getCurrentInstance(){
+    public static InternalStorageService getCurrentInstance(Context appContext){
         if(instance == null){
             instance = new InternalStorageService();
+            context = appContext;
+            init();
         }
         return instance;
     }
 
-    public boolean saveGame(Game game, Context fileContext){
+    private static void init(){
         try {
-            List<Game> gamesDeserialized = readGames(fileContext);
+            FileOutputStream fileOutputStream = context.openFileOutput(FILE_STORAGE, MODE_PRIVATE);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+
+            objectOutputStream.writeObject(new Game(new Date(),0));
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean saveGame(Game game){
+        try {
+            List<Game> gamesDeserialized = readGames();
             if(gamesDeserialized == null) {
                 gamesDeserialized = new ArrayList<>();
             }
             gamesDeserialized.add(0,game);
 
-            FileOutputStream fileOutputStream = fileContext.openFileOutput(FILE_STORAGE, MODE_PRIVATE);
+            FileOutputStream fileOutputStream = this.context.openFileOutput(FILE_STORAGE, MODE_PRIVATE);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
 
             for(Object objToSave : gamesDeserialized) {
@@ -65,11 +85,11 @@ public class InternalStorageService {
         return false;
     }
 
-    public List<Game> readGames(Context fileContext){
+    public List<Game> readGames(){
         List<Game> objects = null;
 
         try {
-            FileInputStream fileInputStream = fileContext.openFileInput(FILE_STORAGE);
+            FileInputStream fileInputStream = this.context.openFileInput(FILE_STORAGE);
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
             Game object = null;
             objects = new ArrayList<>();
@@ -82,7 +102,7 @@ public class InternalStorageService {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch(EOFException e){
-            e.printStackTrace();
+//            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

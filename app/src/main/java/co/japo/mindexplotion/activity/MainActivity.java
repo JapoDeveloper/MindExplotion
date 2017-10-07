@@ -1,25 +1,14 @@
-package co.japo.mindexplotion;
+package co.japo.mindexplotion.activity;
 
 import android.content.Intent;
-import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import co.japo.mindexplotion.model.Game;
-import co.japo.mindexplotion.model.Option;
-import co.japo.mindexplotion.service.InternalStorageService;
-import co.japo.mindexplotion.task.AsyncResponse;
-import co.japo.mindexplotion.task.GameChallengeDisplayTask;
-import co.japo.mindexplotion.util.AudioPlayer;
-import co.japo.mindexplotion.util.NumberGenerationStrategy;
+import co.japo.mindexplotion.R;
+import co.japo.mindexplotion.controller.GameController;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 

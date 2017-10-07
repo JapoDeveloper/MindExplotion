@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="co.japo.mindexplotion.MainActivity">
+    tools:context="co.japo.mindexplotion.activity.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -69,7 +69,7 @@
             android:layout_alignParentLeft="true"
             android:layout_margin="10dp"
             android:paddingLeft="20dp"
-            android:textSize="16sp"/>
+            android:textSize="20sp"/>
 
         <TextView
             android:id="@+id/highestScore"
@@ -80,15 +80,15 @@
             android:layout_alignParentRight="true"
             android:layout_margin="10dp"
             android:paddingRight="20dp"
-            android:textSize="16sp"/>
+            android:textSize="20sp"/>
 
         <ImageButton
             android:id="@+id/startGame"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Start game"
             android:src="@drawable/ic_play_circle_filled_black_24dp"
+            android:background="?android:selectableItemBackground"
             android:padding="40dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"/>
@@ -97,10 +97,10 @@
             android:id="@+id/gamesListButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Played"
             android:src="@drawable/ic_poll_black_24dp"
+            android:background="?android:selectableItemBackground"
+            android:padding="10dp"
             android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:backgroundTint="@color/colorAccent"/>
+            android:layout_alignParentBottom="true"/>
     </RelativeLayout>
 </FrameLayout>

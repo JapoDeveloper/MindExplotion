@@ -3,4 +3,9 @@
     <string name="new_game">Start new game</string>
     <string name="game_over">Game over!</string>
     <string name="user_correct_response">Great!</string>
+    <string name="games_list_header">List of games played</string>
+    <string name="cancel">Cancel</string>
+    <string name="score">Score: </string>
+    <string name="hightest">Highest: </string>
+
 </resources>

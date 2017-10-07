@@ -18,7 +18,6 @@ public class AudioPlayer implements Audible{
 
     @Override
     public void playAudio(int audioId){
-        //TODO: Bug!, after a few playbacks the audio stops being heard
         if(instance != null)
             instance.stop();
         new Thread(() -> {

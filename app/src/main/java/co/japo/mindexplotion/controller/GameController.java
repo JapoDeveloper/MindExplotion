@@ -1,8 +1,9 @@
-package co.japo.mindexplotion;
+package co.japo.mindexplotion.controller;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import co.japo.mindexplotion.R;
 import co.japo.mindexplotion.model.Game;
 import co.japo.mindexplotion.model.Option;
 import co.japo.mindexplotion.service.InternalStorageService;
@@ -49,7 +51,7 @@ public class GameController implements AsyncResponse {
     }
 
     private void init(){
-        this.internalStorageService = InternalStorageService.getCurrentInstance();
+        this.internalStorageService = InternalStorageService.getCurrentInstance(this.context);
         this.options = new Option[] {
                 new Option(this.context.findViewById(R.id.startGame),
                         0,R.color.deepPurpleActive,R.color.deepPurpleInactive,R.raw.sound4),
@@ -63,15 +65,15 @@ public class GameController implements AsyncResponse {
                         4,R.color.blueActive,R.color.blueInactive,R.raw.sound2)
         };
 
-        for(Option option: options){
-            option.getView().setBackgroundColor(this.context.getResources().getColor(option.getInactive_color()));
+        for(int i = 1; i < options.length; i++){
+            options[i].getView().setBackgroundColor(ContextCompat.getColor(this.context,options[i].getInactive_color()));
         }
 
         this.audioPlayer = new AudioPlayer(this.context);
         this.gameStarted = false;
         this.currentScore = 0;
 
-        this.games = this.internalStorageService.readGames(context);
+        this.games = this.internalStorageService.readGames();
         if(games == null){
             this.highestScore = 0;
         }else{
@@ -81,6 +83,7 @@ public class GameController implements AsyncResponse {
                     this.highestScore = games.get(i).getScore();
                 }
             }
+            updateHighestScore();
         }
         enableViews(false);
 
@@ -100,7 +103,6 @@ public class GameController implements AsyncResponse {
     private void newTurn(){
         this.challenge.add(NumberGenerationStrategy.random(MIN_VALUE,MAX_VALUE));
         this.currentScore++;
-        System.out.println("Challenge sequence => "+challenge.toString());
         this.evaluationChallengeIndex = 0;
         enableViews(false);
         Toast.makeText(this.context,R.string.user_correct_response,Toast.LENGTH_SHORT).show();
@@ -119,7 +121,6 @@ public class GameController implements AsyncResponse {
         if(option != null) {
             animateButton(view, option);
             boolean valid = option.getValue() == challenge.get(this.evaluationChallengeIndex);
-            System.out.println("Level "+challenge.size()+" => index "+this.evaluationChallengeIndex+", value expected "+challenge.get(this.evaluationChallengeIndex)+", value getted "+option.getValue());
 
             if (!valid) {
                 gameOver();
@@ -133,9 +134,9 @@ public class GameController implements AsyncResponse {
 
     private void animateButton(View view, Option option){
         audioPlayer.playAudio(option.getSound());
-        view.setBackgroundColor(context.getResources().getColor(option.getActive_color()));
+        view.setBackgroundColor(ContextCompat.getColor(this.context,option.getActive_color()));
         view.postDelayed(() -> {
-            view.setBackgroundColor(context.getResources().getColor(option.getInactive_color()));
+            view.setBackgroundColor(ContextCompat.getColor(this.context,option.getInactive_color()));
         },550);
     }
 
@@ -169,27 +170,32 @@ public class GameController implements AsyncResponse {
         }
 
         Game gamePlayed = new Game(new Date(),earnedPoints);
-        this.internalStorageService.saveGame(gamePlayed, context);
+        this.internalStorageService.saveGame(gamePlayed);
 
         audioPlayer.playAudio(R.raw.game_over);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
 
         builder.setMessage(R.string.game_over);
-        builder.setNeutralButton(R.string.new_game,(dialogInterface, i) -> {
+        builder.setPositiveButton(R.string.new_game,(dialogInterface, i) -> {
             audioPlayer.stopAudio();
             startNewGame();
         });
+        builder.setNegativeButton(R.string.cancel,((dialogInterface, i) -> {
+            this.gameStarted = false;
+            audioPlayer.stopAudio();
+            enableViews(false);
+        }));
 
         builder.create().show();
     }
 
     private void updateCurrentScore(){
-        ((TextView)this.context.findViewById(R.id.currentScore)).setText("Score: "+this.currentScore);
+        ((TextView)this.context.findViewById(R.id.currentScore)).setText(this.context.getString(R.string.score)+this.currentScore);
     }
 
     private void updateHighestScore(){
-        ((TextView)this.context.findViewById(R.id.highestScore)).setText("Highest: "+this.highestScore);
+        ((TextView)this.context.findViewById(R.id.highestScore)).setText(this.context.getString(R.string.hightest)+this.highestScore);
     }
 
 
